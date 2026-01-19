@@ -1,0 +1,284 @@
+# 🎨 BrandaoZap Frontend - Regras e Boas Práticas
+
+## 📋 Arquitetura
+
+### Estrutura de Pastas (Next.js 14+ App Router)
+
+```
+src/
+├── app/                       # App Router (Next.js 14+)
+│   ├── layout.tsx            # Layout raiz
+│   ├── page.tsx              # Home page
+│   ├── (auth)/               # Route group para autenticação
+│   │   ├── login/
+│   │   └── register/
+│   ├── (dashboard)/          # Route group para dashboard
+│   │   ├── layout.tsx        # Layout do dashboard
+│   │   ├── dashboard/
+│   │   ├── whatsapp/
+│   │   │   ├── page.tsx      # Lista de sessões
+│   │   │   └── [sessionId]/
+│   │   │       └── page.tsx  # Detalhes da sessão
+│   │   ├── flows/
+│   │   │   ├── page.tsx      # Lista de fluxos
+│   │   │   ├── new/
+│   │   │   │   └── page.tsx  # Criar fluxo
+│   │   │   └── [id]/
+│   │   │       └── page.tsx  # Editar fluxo
+│   │   ├── contacts/
+│   │   │   ├── page.tsx
+│   │   │   └── [id]/
+│   │   ├── campaigns/
+│   │   │   ├── page.tsx
+│   │   │   └── [id]/
+│   │   ├── templates/
+│   │   │   └── page.tsx
+│   │   └── chat/
+│   │       └── [chatId]/
+│   │           └── page.tsx
+│   └── api/                   # API Routes (se necessário)
+├── components/                # Componentes React
+│   ├── ui/                    # Componentes base (shadcn/ui)
+│   │   ├── button/
+│   │   ├── input/
+│   │   ├── card/
+│   │   └── ...
+│   ├── layout/                # Componentes de layout
+│   │   ├── Header/
+│   │   ├── Sidebar/
+│   │   └── Footer/
+│   ├── whatsapp/              # Componentes específicos WhatsApp
+│   │   ├── QRCodeScanner/
+│   │   ├── SessionCard/
+│   │   └── MessageList/
+│   ├── flows/                 # Componentes de fluxos
+│   │   ├── FlowBuilder/
+│   │   ├── FlowNode/
+│   │   └── FlowCanvas/
+│   ├── contacts/              # Componentes de contatos
+│   ├── campaigns/             # Componentes de campanhas
+│   └── chat/                  # Componentes de chat
+│       ├── ChatWindow/
+│       ├── MessageBubble/
+│       └── ChatInput/
+├── lib/                       # Utilitários e configurações
+│   ├── api/                   # Cliente API
+│   │   ├── client.ts
+│   │   ├── endpoints.ts
+│   │   └── types.ts
+│   ├── hooks/                 # Custom hooks
+│   │   ├── useWebSocket.ts
+│   │   ├── useWhatsApp.ts
+│   │   └── useAuth.ts
+│   ├── utils/                 # Funções utilitárias
+│   │   ├── format.ts
+│   │   ├── validation.ts
+│   │   └── constants.ts
+│   └── store/                 # Estado global (Zustand/Redux)
+│       ├── auth.store.ts
+│       ├── whatsapp.store.ts
+│       └── chat.store.ts
+├── types/                     # TypeScript types
+│   ├── api.types.ts
+│   ├── whatsapp.types.ts
+│   └── flow.types.ts
+└── styles/                    # Estilos globais
+    └── globals.css
+```
+
+## 🎯 Princípios e Regras
+
+### 1. **Componentes**
+- ✅ Componentes funcionais com hooks
+- ✅ Um componente por arquivo
+- ✅ Nomes em PascalCase
+- ✅ Props tipadas com TypeScript
+- ✅ Componentes pequenos e reutilizáveis
+- ✅ Separação de lógica e apresentação
+
+### 2. **Estado**
+- ✅ Estado local com `useState` quando apropriado
+- ✅ Estado global com Zustand ou Context API
+- ✅ Server state com React Query/TanStack Query
+- ✅ Evitar prop drilling excessivo
+
+### 3. **Data Fetching**
+- ✅ Usar React Query para requisições HTTP
+- ✅ Cache automático e invalidação
+- ✅ Loading e error states
+- ✅ Otimistic updates quando apropriado
+- ✅ Server Components quando possível (Next.js)
+
+### 4. **Formulários**
+- ✅ Usar React Hook Form para formulários
+- ✅ Validação com Zod ou Yup
+- ✅ Feedback visual de erros
+- ✅ Estados de loading durante submit
+
+### 5. **Estilização**
+- ✅ Tailwind CSS como base
+- ✅ Componentes do shadcn/ui
+- ✅ Design system consistente
+- ✅ Responsive design mobile-first
+- ✅ Dark mode support
+
+### 6. **TypeScript**
+- ✅ TypeScript strict mode
+- ✅ Tipos explícitos, evitar `any`
+- ✅ Interfaces para props e dados
+- ✅ Types para unions e literals
+- ✅ Generics quando apropriado
+
+### 7. **Performance**
+- ✅ Lazy loading de componentes pesados
+- ✅ `React.memo` para componentes puros
+- ✅ `useMemo` e `useCallback` quando necessário
+- ✅ Code splitting automático (Next.js)
+- ✅ Imagens otimizadas com `next/image`
+- ✅ Virtualização para listas longas
+
+### 8. **WebSockets**
+- ✅ Custom hook para WebSocket
+- ✅ Reconexão automática
+- ✅ Gerenciamento de conexões
+- ✅ Cleanup adequado em unmount
+
+### 9. **Autenticação**
+- ✅ JWT armazenado em httpOnly cookies
+- ✅ Refresh token automático
+- ✅ Proteção de rotas
+- ✅ Redirect após login/logout
+
+### 10. **Construtor de Fluxos**
+- ✅ Biblioteca: React Flow ou React DnD
+- ✅ Drag and drop funcional
+- ✅ Validação de conexões
+- ✅ Preview de fluxo
+- ✅ Export/Import de fluxos
+
+### 11. **Chat em Tempo Real**
+- ✅ WebSocket para mensagens
+- ✅ Scroll automático para última mensagem
+- ✅ Indicadores de digitação
+- ✅ Status de entrega/leitura
+- ✅ Suporte a mídia (imagens, áudio, vídeo)
+
+### 12. **QR Code Scanner**
+- ✅ Biblioteca: `qrcode.react` ou `react-qr-reader`
+- ✅ Auto-refresh quando desconectado
+- ✅ Feedback visual de status
+- ✅ Histórico de conexões
+
+### 13. **Validação**
+- ✅ Validação client-side com Zod
+- ✅ Validação server-side (backend)
+- ✅ Mensagens de erro claras
+- ✅ Validação em tempo real
+
+### 14. **Acessibilidade**
+- ✅ Semântica HTML adequada
+- ✅ ARIA labels quando necessário
+- ✅ Navegação por teclado
+- ✅ Contraste adequado
+- ✅ Screen reader friendly
+
+### 15. **Error Handling**
+- ✅ Error boundaries para erros React
+- ✅ Try/catch em async operations
+- ✅ Mensagens de erro user-friendly
+- ✅ Logging de erros (Sentry ou similar)
+- ✅ Fallback UI para erros
+
+### 16. **Testes**
+- ✅ Unit tests com Vitest
+- ✅ Component tests com React Testing Library
+- ✅ E2E tests com Playwright
+- ✅ Testes de integração
+
+### 17. **SEO**
+- ✅ Metadata adequada
+- ✅ Open Graph tags
+- ✅ Sitemap.xml
+- ✅ robots.txt
+
+### 18. **Code Quality**
+- ✅ ESLint configurado
+- ✅ Prettier para formatação
+- ✅ Husky para pre-commit hooks
+- ✅ Commits semânticos
+
+## 📦 Dependências Recomendadas
+
+```json
+{
+  "next": "^14.0.0",
+  "react": "^19.0.0",
+  "react-dom": "^19.0.0",
+  "@tanstack/react-query": "^5.0.0",
+  "zustand": "^4.4.0",
+  "react-hook-form": "^7.48.0",
+  "zod": "^3.22.0",
+  "@hookform/resolvers": "^3.3.0",
+  "reactflow": "^11.10.0",
+  "socket.io-client": "^4.5.0",
+  "axios": "^1.6.0",
+  "date-fns": "^2.30.0",
+  "clsx": "^2.0.0",
+  "tailwind-merge": "^2.0.0",
+  "lucide-react": "^0.300.0",
+  "@radix-ui/react-dialog": "^1.0.0",
+  "@radix-ui/react-dropdown-menu": "^2.0.0",
+  "class-variance-authority": "^0.7.0"
+}
+```
+
+## 🎨 Design System
+
+### Cores Principais
+- Primary: WhatsApp Green (#25D366)
+- Secondary: Dark Green (#128C7E)
+- Background: Light Gray (#F0F2F5)
+- Text: Dark Gray (#1F2937)
+
+### Componentes Base
+- Usar shadcn/ui como base
+- Customizar para identidade visual
+- Manter consistência
+
+## 🔄 Fluxo de Desenvolvimento
+
+1. **Criar página**: Adicionar em `app/`
+2. **Criar componente**: Adicionar em `components/`
+3. **Criar hook**: Adicionar em `lib/hooks/`
+4. **Criar tipo**: Adicionar em `types/`
+5. **Testar**: `pnpm test`
+6. **Rodar**: `pnpm dev`
+
+## 🚫 Anti-patterns a Evitar
+
+- ❌ Estado global desnecessário
+- ❌ Efeitos colaterais em render
+- ❌ Mutação direta de estado
+- ❌ Props drilling excessivo
+- ❌ Componentes muito grandes
+- ❌ Lógica de negócio em componentes
+- ❌ Requisições em loops
+- ❌ Dependências não otimizadas
+- ❌ Imagens não otimizadas
+- ❌ CSS inline excessivo
+
+## 📱 Responsividade
+
+- Mobile: < 640px
+- Tablet: 640px - 1024px
+- Desktop: > 1024px
+- Testar em todos os breakpoints
+
+## 🔐 Segurança
+
+- ✅ Validar inputs no client e server
+- ✅ Sanitizar dados antes de exibir
+- ✅ HTTPS obrigatório
+- ✅ Não expor tokens em client-side
+- ✅ CSRF protection
+- ✅ XSS prevention
