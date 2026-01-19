@@ -70,4 +70,92 @@ export const whatsappApi = {
     );
     return response.data;
   },
+
+  // Sincronizar chats do WAHA
+  syncChats: async (sessionId: string): Promise<any[]> => {
+    const response = await apiClient.get(
+      `${API_ENDPOINTS.whatsapp.sessions}/${sessionId}/chats/sync`
+    );
+    return response.data;
+  },
+
+  // ========== CHATS PROXY ENDPOINTS ==========
+  getChats: async (sessionId: string): Promise<any[]> => {
+    const response = await apiClient.get(
+      `${API_ENDPOINTS.whatsapp.sessions}/${sessionId}/chats`
+    );
+    return response.data;
+  },
+
+  getChatPicture: async (sessionId: string, chatId: string): Promise<string> => {
+    const response = await apiClient.get(
+      `${API_ENDPOINTS.whatsapp.sessions}/${sessionId}/chats/${encodeURIComponent(chatId)}/picture`
+    );
+    return response.data;
+  },
+
+  archiveChat: async (sessionId: string, chatId: string): Promise<void> => {
+    await apiClient.post(
+      `${API_ENDPOINTS.whatsapp.sessions}/${sessionId}/chats/${encodeURIComponent(chatId)}/archive`
+    );
+  },
+
+  unarchiveChat: async (sessionId: string, chatId: string): Promise<void> => {
+    await apiClient.post(
+      `${API_ENDPOINTS.whatsapp.sessions}/${sessionId}/chats/${encodeURIComponent(chatId)}/unarchive`
+    );
+  },
+
+  deleteChat: async (sessionId: string, chatId: string): Promise<void> => {
+    await apiClient.delete(
+      `${API_ENDPOINTS.whatsapp.sessions}/${sessionId}/chats/${encodeURIComponent(chatId)}`
+    );
+  },
+
+  // ========== MESSAGES PROXY ENDPOINTS ==========
+  getChatMessages: async (
+    sessionId: string,
+    chatId: string,
+    limit?: number,
+    page?: number
+  ): Promise<any[]> => {
+    const params = new URLSearchParams();
+    if (limit) params.append('limit', limit.toString());
+    if (page) params.append('page', page.toString());
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    
+    const response = await apiClient.get(
+      `${API_ENDPOINTS.whatsapp.sessions}/${sessionId}/chats/${encodeURIComponent(chatId)}/messages${queryString}`
+    );
+    return response.data;
+  },
+
+  markMessagesAsRead: async (sessionId: string, chatId: string): Promise<void> => {
+    await apiClient.post(
+      `${API_ENDPOINTS.whatsapp.sessions}/${sessionId}/chats/${encodeURIComponent(chatId)}/messages/read`
+    );
+  },
+
+  // ========== CONTACTS PROXY ENDPOINTS ==========
+  getContacts: async (sessionId: string): Promise<any[]> => {
+    const response = await apiClient.get(
+      `${API_ENDPOINTS.whatsapp.sessions}/${sessionId}/contacts`
+    );
+    return response.data;
+  },
+
+  getContact: async (sessionId: string, contactId: string): Promise<any> => {
+    const response = await apiClient.get(
+      `${API_ENDPOINTS.whatsapp.sessions}/${sessionId}/contacts/${encodeURIComponent(contactId)}`
+    );
+    return response.data;
+  },
+
+  // ========== STATUS PROXY ENDPOINTS ==========
+  getMe: async (sessionId: string): Promise<any> => {
+    const response = await apiClient.get(
+      `${API_ENDPOINTS.whatsapp.sessions}/${sessionId}/me`
+    );
+    return response.data;
+  },
 };
